@@ -71,6 +71,7 @@ BEGIN
             VALUE "FileVersion", "0.0.0.0"
             VALUE "InternalName", "UWP_MIDIIO.dll"
             VALUE "LegalCopyright", "Copyright (C) 2022 Masamichi Hosoda. License: BSD-2-Clause"
+            VALUE "LegalTrademarks", "https://github.com/trueroad/uwp_midiio"
             VALUE "OriginalFilename", "UWP_MIDIIO.dll"
             VALUE "ProductName", "UWP MIDIIO Library (DLL)"
             VALUE "ProductVersion", "0.0.0.0"
