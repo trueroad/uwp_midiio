@@ -8,6 +8,28 @@
 #define PCH_H
 
 // プリコンパイルするヘッダーをここに追加します
+#include <algorithm>
+#include <chrono>
+#include <deque>
+#include <memory>
+#include <mutex>
+#include <regex>
+#include <sstream>
+#include <string>
+#include <string_view>
+#include <utility>
+#include <vector>
+
+#include <cstring>
+
+#include <winrt/base.h>
+#include <winrt/Windows.Foundation.h>
+#include <winrt/Windows.Foundation.Collections.h>
+#include <winrt/Windows.Devices.Enumeration.h>
+#include <winrt/Windows.Devices.Midi.h>
+#include <winrt/Windows.Storage.Streams.h>
+#include <winrt/Windows.Security.Cryptography.h>
+
 #include "framework.h"
 
 #endif //PCH_H
