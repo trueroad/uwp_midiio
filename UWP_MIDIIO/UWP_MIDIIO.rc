@@ -13,11 +13,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// æ—¥æœ¬èªž (æ—¥æœ¬) resources
+// “ú–{Œê (“ú–{) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
 LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
-#pragma code_page(65001)
+#pragma code_page(932)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -51,8 +51,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,1
- PRODUCTVERSION 1,0,0,1
+ FILEVERSION 0,0,0,0
+ PRODUCTVERSION 0,0,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -65,25 +65,24 @@ VS_VERSION_INFO VERSIONINFO
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
-        BLOCK "041104b0"
+        BLOCK "000004b0"
         BEGIN
-            VALUE "CompanyName", "TODO: <ä¼šç¤¾å>"
-            VALUE "FileDescription", "TODO: <ãƒ•ã‚¡ã‚¤ãƒ«ã®èª¬æ˜Ž>"
-            VALUE "FileVersion", "1.0.0.1"
-            VALUE "InternalName", "UWP_MIDI.dll"
-            VALUE "LegalCopyright", "Copyright (C) 2022"
-            VALUE "OriginalFilename", "UWP_MIDI.dll"
-            VALUE "ProductName", "TODO: <è£½å“å>"
-            VALUE "ProductVersion", "1.0.0.1"
+            VALUE "FileDescription", "UWP MIDIIO Library (DLL) that enables using BLE MIDI (Bluetooth MIDI) devices for Sekaiju"
+            VALUE "FileVersion", "0.0.0.0"
+            VALUE "InternalName", "UWP_MIDIIO.dll"
+            VALUE "LegalCopyright", "Copyright (C) 2022 Masamichi Hosoda. License: BSD-2-Clause"
+            VALUE "OriginalFilename", "UWP_MIDIIO.dll"
+            VALUE "ProductName", "UWP MIDIIO Library (DLL)"
+            VALUE "ProductVersion", "0.0.0.0"
         END
     END
     BLOCK "VarFileInfo"
     BEGIN
-        VALUE "Translation", 0x411, 1200
+        VALUE "Translation", 0x0, 1200
     END
 END
 
-#endif    // æ—¥æœ¬èªž (æ—¥æœ¬) resources
+#endif    // “ú–{Œê (“ú–{) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
