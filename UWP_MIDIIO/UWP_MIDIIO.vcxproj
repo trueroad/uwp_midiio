@@ -95,6 +95,14 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="config.h" />
+    <ClInclude Include="debug_message.h" />
+    <ClInclude Include="device_enum.h" />
+    <ClInclude Include="midi_port.h" />
+    <ClInclude Include="midi_port_in.h" />
+    <ClInclude Include="midi_port_out.h" />
+    <ClInclude Include="midi_ports.h" />
+    <ClInclude Include="uwp_midiio.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -102,6 +110,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="device_enum.cpp" />
+    <ClCompile Include="midi_port.cpp" />
+    <ClCompile Include="midi_port_in.cpp" />
+    <ClCompile Include="midi_port_out.cpp" />
+    <ClCompile Include="midi_ports.cpp" />
+    <ClCompile Include="uwp_midiio.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="UWP_MIDIIO.rc" />

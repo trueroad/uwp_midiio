@@ -1,9 +1,9 @@
-﻿//
+//
 // UWP MIDIIO Library (DLL) that enables using BLE MIDI devices for Sekaiju
 // https://github.com/trueroad/uwp_midiio
 //
-// pch.h:
-//   Pre compile header
+// config.h:
+//   Config file
 //
 // Copyright (C) 2022 Masamichi Hosoda.
 // All rights reserved.
@@ -33,31 +33,29 @@
 // SUCH DAMAGE.
 //
 
-#ifndef PCH_H
-#define PCH_H
+#pragma once
 
-#include <algorithm>
-#include <chrono>
-#include <deque>
-#include <memory>
-#include <mutex>
-#include <regex>
-#include <sstream>
-#include <string>
-#include <string_view>
-#include <utility>
-#include <vector>
+#include "pch.h"
 
-#include <cstring>
+#define UWP_MIDIIO_EXPORTS
 
-#include <winrt/base.h>
-#include <winrt/Windows.Foundation.h>
-#include <winrt/Windows.Foundation.Collections.h>
-#include <winrt/Windows.Devices.Enumeration.h>
-#include <winrt/Windows.Devices.Midi.h>
-#include <winrt/Windows.Storage.Streams.h>
-#include <winrt/Windows.Security.Cryptography.h>
+namespace uwp_midiio
+{
+	using namespace std::chrono_literals;
+	constexpr auto MIDI_PORT_OPEN_TIMEOUT{ 3s };
 
-#include "framework.h"
+	constexpr size_t DEFAULT_MIDI_IN_QUEUE_SIZE{ 8192 };
+	constexpr size_t MAX_MIDI_IN_QUEUE_SIZE{ 16384 };
 
-#endif //PCH_H
+	// verbose level
+	// 0: none
+	// 1: fatal
+	// 2: error
+	// 3: warn
+	// 4: info
+	// 5: debug
+	// 6: trace
+
+	constexpr int VERBOSE_LEVEL_DEBUG{ 6 };
+	constexpr int VERBOSE_LEVEL_NDEBUG{ 3 };
+}

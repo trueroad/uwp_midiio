@@ -1,9 +1,9 @@
-﻿//
+//
 // UWP MIDIIO Library (DLL) that enables using BLE MIDI devices for Sekaiju
 // https://github.com/trueroad/uwp_midiio
 //
-// dllmain.cpp:
-//   DLL main entry point
+// midi_port.cpp:
+//   MIDI IN/OUT port base class `uwp_midiio_port`
 //
 // Copyright (C) 2022 Masamichi Hosoda.
 // All rights reserved.
@@ -33,44 +33,74 @@
 // SUCH DAMAGE.
 //
 
+// See
+// https://gist.github.com/trueroad/9c5317af5f212b2de7c7012e76b9e66b
+
 #include "pch.h"
 #include "config.h"
 
+#include "midi_port.h"
+
 #include "debug_message.h"
+#include "midi_port_in.h"
+#include "midi_port_out.h"
+#include "uwp_midiio.h"
 
-#if !defined(NDEBUG) && defined(_MSC_VER)
-// Workaround for avoiding false positive `Detected memory leaks!`
-__declspec(dllimport) HINSTANCE __stdcall AfxGetInstanceHandle();
-#pragma comment(lib, "mfc140ud.lib")
-#endif
+using namespace winrt;
+using namespace Windows::Foundation;
+using namespace Windows::Devices::Midi;
 
-BOOL APIENTRY DllMain(HMODULE hModule,
-	DWORD  ul_reason_for_call,
-	LPVOID lpReserved
-)
+namespace uwp_midiio
 {
-	switch (ul_reason_for_call)
+	template class uwp_midiio_port<uwp_midiio_port_in, MIDIIn,
+		MidiInPort, MidiInPort>;
+	template class uwp_midiio_port<uwp_midiio_port_out, MIDIOut,
+		MidiOutPort, IMidiOutPort>;
+
+	template<class Derived, class MidiIO_T,
+		class MidiPort_T, class IMidiPort_T>
+	uwp_midiio_port<Derived, MidiIO_T, MidiPort_T, IMidiPort_T
+		>::~uwp_midiio_port()
 	{
-	case DLL_PROCESS_ATTACH:
-		DEBUG_MESSAGE_STATIC_W(L"DllMain DLL_PROCESS_ATTACH\n");
-		winrt::init_apartment();
-		break;
-	case DLL_THREAD_ATTACH:
-		DEBUG_MESSAGE_STATIC_W(L"DllMain DLL_THREAD_ATTACH\n");
-		break;
-	case DLL_THREAD_DETACH:
-		DEBUG_MESSAGE_STATIC_W(L"DllMain DLL_THREAD_DETACH\n");
-		break;
-	case DLL_PROCESS_DETACH:
-		DEBUG_MESSAGE_STATIC_W(L"DllMain DLL_PROCESS_DETACH\n");
-#if !defined(NDEBUG) && defined(_MSC_VER)
-		// Workaround for avoiding false positive `Detected memory leaks!`
-		AfxGetInstanceHandle();
-#endif
-		break;
-	default:
-		WARNING_MESSAGE_STATIC_W(L"DllMain unknown\n");
-		break;
 	}
-	return TRUE;
+
+	template<class Derived, class MidiIO_T,
+		class MidiPort_T, class IMidiPort_T>
+	void uwp_midiio_port<Derived, MidiIO_T, MidiPort_T, IMidiPort_T
+		>::open_from_id(std::wstring_view id)
+	{
+		DEBUG_MESSAGE_W(L"enter \"" << id << L"\"\n");
+
+		if (port())
+		{
+			port().Close();
+			port() = nullptr;
+		}
+
+		DEBUG_MESSAGE_W(L"  trying FromIdAsync\n");
+		try
+		{
+			auto async = MidiPort_T::FromIdAsync(id);
+
+			DEBUG_MESSAGE_W(L"  trying wait_for\n");
+			if (async.wait_for(MIDI_PORT_OPEN_TIMEOUT) ==
+				AsyncStatus::Completed)
+			{
+				port() = async.GetResults();
+			}
+		}
+		catch (winrt::hresult_error const& ex)
+		{
+			WARNING_MESSAGE_W(L"exception 0x"
+				<< std::hex << ex.code()
+				<< L", "
+				<< static_cast<std::wstring_view>(ex.message())
+				<< L"\n");
+
+			return;
+		}
+
+		DEBUG_MESSAGE_W(L"returns\n");
+		return;
+	}
 }

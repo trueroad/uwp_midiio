@@ -1,9 +1,9 @@
-﻿//
+//
 // UWP MIDIIO Library (DLL) that enables using BLE MIDI devices for Sekaiju
 // https://github.com/trueroad/uwp_midiio
 //
-// pch.h:
-//   Pre compile header
+// midi_port_out.cpp:
+//   MIDI OUT port class `uwp_midiio_port_out`
 //
 // Copyright (C) 2022 Masamichi Hosoda.
 // All rights reserved.
@@ -33,31 +33,63 @@
 // SUCH DAMAGE.
 //
 
-#ifndef PCH_H
-#define PCH_H
+// See
+// https://gist.github.com/trueroad/9c5317af5f212b2de7c7012e76b9e66b
 
-#include <algorithm>
-#include <chrono>
-#include <deque>
-#include <memory>
-#include <mutex>
-#include <regex>
-#include <sstream>
-#include <string>
-#include <string_view>
-#include <utility>
-#include <vector>
+#include "pch.h"
+#include "config.h"
 
-#include <cstring>
+#include "midi_port_out.h"
 
-#include <winrt/base.h>
-#include <winrt/Windows.Foundation.h>
-#include <winrt/Windows.Foundation.Collections.h>
-#include <winrt/Windows.Devices.Enumeration.h>
-#include <winrt/Windows.Devices.Midi.h>
-#include <winrt/Windows.Storage.Streams.h>
-#include <winrt/Windows.Security.Cryptography.h>
+#include "debug_message.h"
+#include "device_enum.h"
 
-#include "framework.h"
+using namespace winrt;
+using namespace Windows::Foundation;
+using namespace Windows::Devices::Midi;
+using namespace Windows::Storage::Streams;
+using namespace Windows::Security::Cryptography;
 
-#endif //PCH_H
+namespace uwp_midiio
+{
+	std::wstring uwp_midiio_port_out::find_id_from_display_name(
+		std::wstring_view display_name)
+	{
+		return device_enum::find_out_id_from_display_name(display_name);
+	}
+
+	bool uwp_midiio_port_out::send_buffer(const unsigned char* buff,
+		size_t len)
+	{
+		TRACE_MESSAGE_W(L"enter\n");
+
+		if (!port())
+		{
+			WARNING_MESSAGE_W(L"port is nullptr\n");
+
+			return false;
+		}
+
+		TRACE_MESSAGE_W(L"  trying CreateFromByteArray\n");
+		try
+		{
+			auto b{ CryptographicBuffer::CreateFromByteArray
+				(array_view(buff, buff + len)) };
+			TRACE_MESSAGE_W(L"  trying SendBuffer\n");
+			port().SendBuffer(b);
+		}
+		catch (hresult_error const& ex)
+		{
+			WARNING_MESSAGE_W(L"exception 0x"
+				<< std::hex << ex.code()
+				<< L", "
+				<< static_cast<std::wstring_view>(ex.message())
+				<< L"\n");
+
+			return false;
+		}
+
+		TRACE_MESSAGE_W(L"returns true\n");
+		return true;
+	}
+}

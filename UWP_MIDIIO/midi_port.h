@@ -1,9 +1,9 @@
-﻿//
+//
 // UWP MIDIIO Library (DLL) that enables using BLE MIDI devices for Sekaiju
 // https://github.com/trueroad/uwp_midiio
 //
-// pch.h:
-//   Pre compile header
+// midi_port.h:
+//   MIDI IN/OUT port base class `uwp_midiio_port`
 //
 // Copyright (C) 2022 Masamichi Hosoda.
 // All rights reserved.
@@ -33,31 +33,62 @@
 // SUCH DAMAGE.
 //
 
-#ifndef PCH_H
-#define PCH_H
+#pragma once
 
-#include <algorithm>
-#include <chrono>
-#include <deque>
-#include <memory>
-#include <mutex>
-#include <regex>
-#include <sstream>
-#include <string>
-#include <string_view>
-#include <utility>
-#include <vector>
+#include "pch.h"
+#include "config.h"
 
-#include <cstring>
+#include "uwp_midiio.h"
 
-#include <winrt/base.h>
-#include <winrt/Windows.Foundation.h>
-#include <winrt/Windows.Foundation.Collections.h>
-#include <winrt/Windows.Devices.Enumeration.h>
-#include <winrt/Windows.Devices.Midi.h>
-#include <winrt/Windows.Storage.Streams.h>
-#include <winrt/Windows.Security.Cryptography.h>
+namespace uwp_midiio
+{
+	template<class Derived, class MidiIO_T,
+		class MidiPort_T, class IMidiPort_T>
+	class uwp_midiio_port : public MidiIO_T
+	{
+	public:
+		uwp_midiio_port() :
+			port_(nullptr)
+		{
+		}
+		virtual ~uwp_midiio_port() = 0;
 
-#include "framework.h"
+		uwp_midiio_port(const uwp_midiio_port&) = delete;
+		uwp_midiio_port& operator=(const uwp_midiio_port&) = delete;
+		uwp_midiio_port(uwp_midiio_port&&) = delete;
+		uwp_midiio_port& operator=(uwp_midiio_port&&) = delete;
 
-#endif //PCH_H
+		MidiIO_T* get_ptr()
+		{
+			return this;
+		}
+		static Derived* get_class(MidiIO_T* ptr)
+		{
+			return static_cast<Derived*>(ptr);
+		}
+
+		IMidiPort_T& port()
+		{
+			return port_;
+		}
+		void set_display_name(std::wstring_view display_name)
+		{
+			display_name_ = display_name;
+			m_pDeviceName = display_name_.data();
+		}
+
+		virtual std::wstring find_id_from_display_name(
+			std::wstring_view display_name) = 0;
+
+		virtual void open_from_id(std::wstring_view id);
+
+		void open_from_display_name(std::wstring_view display_name)
+		{
+			open_from_id(find_id_from_display_name(display_name));
+		}
+
+	private:
+		IMidiPort_T port_;
+		std::wstring display_name_;
+	};
+}
